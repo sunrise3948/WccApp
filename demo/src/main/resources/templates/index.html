@@ -1,0 +1,74 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>WCC Portal</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+    <h1 class="core">Welcome to WCC!!</h1>
+    <br/>
+
+    <div sec:authorize="isAuthenticated()" class="h3 mr-2 text-right">
+        <form th:action="@{/logout}" method="post">
+            <input class="btn btn-primary m-2" type="submit" value="Logout" />
+        </form>
+    </div>
+
+    <br/>
+    <br/>
+
+    <div th:if="${message}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger text-center">
+        [[${errorMessage}]]
+    </div>
+
+
+    <div class="m-2" sec:authorize="hasAnyAuthority('ADMIN')">
+        <a class="h3 mr-2" th:href="@{/players}">Players</a>
+        <a class="h3 mr-2"> | </a>
+        <a class="h3 mr-2" th:href="@{/teams}">Teams</a>
+        <a class="h3 mr-2"> | </a>
+        <a class="h3 mr-2" th:href="@{/txns}">Transactions</a>
+        <a class="h3 mr-2"> | </a>
+        <a class="h3 mr-2" th:href="@{/events}">Events</a>
+        <a class="h3 mr-2"> | </a>
+        <a class="h3 mr-2" th:href="@{/club}">Club</a>
+    </div>
+
+    <div class="m-2" sec:authorize="hasAnyAuthority('USER')">
+        <a class="h3 mr-2" th:href="@{/player}">Account Details</a>
+        <a class="h3 mr-2"> | </a>
+        <a class="h3 mr-2" th:href="@{/txn/player}">Create Expense</a>
+        <a class="h3 mr-2"> | </a>
+        <a class="h3 mr-2" th:href="@{/player/performance}">Your Performance</a>
+    </div>
+<!--
+        Welcome <b><span sec:authentication="name">Username</span></b>
+        &nbsp;
+        <i><span sec:authentication="principal.authorities">Roles</span></i>
+-->
+
+
+
+
+    <img src="/main.jpg" alt="Team photo" class="img-responsive" width="40%">
+</div>
+</body>
+</html>

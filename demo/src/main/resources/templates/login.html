@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Please sign in</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  color: white;
+  padding: 10px;
+}
+.core_blue {
+  color: blue;
+  padding: 10px;
+}
+.core_red {
+  color: #880808;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<div class="container-fluid text-center">
+  <h1 class="core">Welcome to WCC!!</h1>
+
+  <div class="core_red" th:if="${param.error}">Bad Credentials</div>
+  <div class="core_blue" th:if="${param.logout}">You have been logged out</div>
+
+  <div th:if="${error != null}">
+    <p class="text-danger">[[${error}]]</p>
+  </div>
+  <div th:if="${message != null}">
+    <p class="text-warning">[[${message}]]</p>
+  </div>
+
+  <form class="form-signin" method="post" action="/login">
+    <h2 class="core_light form-signin-heading">Please Sign in</h2>
+    <p>
+      <label for="username" class="sr-only">Username</label>
+      <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+    </p>
+    <p>
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+    </p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <a th:href="@{/reset/password}">Reset your password?</a>
+  </form>
+
+</div>
+
+
+</body></html>

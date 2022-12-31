@@ -1,0 +1,138 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WCC Portal</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+  <div class="text-center"><h2 class="core">My Account Details</h2></div>
+  <Br/><Br/>
+
+  <div class="m-2" >
+    <a class="h3 mr-2" th:href="@{/index}">Home</a>
+  </div>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>Starting Balance</th>
+        <th>Current Balance</th>
+        <th>Available Balance</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="account : ${account}">
+        <tr>
+          <td>[[${account.startingBalance}]]</td>
+          <td>[[${account.currentBalance}]]</td>
+          <td>[[${account.availableBalance}]]</td>
+          <td>
+            <a class="h4 mr-2" th:href="@{/player/addFunds}">Add Funds</a>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+
+
+<br/><br/>
+<div class="text-center"><h6 class="core">Transactions</h6></div>
+<br/><br/>
+<div>
+  <table class="table table-bordered table-hover core_light">
+    <thead class="thead-light">
+    <tr>
+      <th>ID</th>
+      <th>Type</th>
+      <th>Source</th>
+      <th>Status</th>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Your share</th>
+      <th>Impact on your Account</th>
+      <th>Txn Date</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="txn : ${listTxns}">
+      <tr>
+        <td>[[${txn.id}]]</td>
+        <td>[[${txn.type}]]</td>
+        <td>[[${txn.source}]]</td>
+        <td>[[${txn.status}]]</td>
+        <td>[[${txn.description}]]</td>
+        <td>[[${txn.amount}]]</td>
+        <td>[[${txn.amount/(#lists.size(txn.players))}]]</td>
+        <td>
+          <span th:if="${(txn.type.name == 'CREDIT') or (txn.type.name == 'EXPENSE' and txn.mode.name == 'INDIVIDUAL')}">CREDIT</span>
+          <span th:unless="${(txn.type.name == 'CREDIT') or (txn.type.name == 'EXPENSE' and txn.mode.name == 'INDIVIDUAL')}">DEBIT</span>
+        </td>
+        <td>[[${#calendars.format(txn.txnDate,'dd MMMM yyyy')}]]</td>
+        <td>
+          <a class="h4 mr-2" th:href="@{/txn/details/{id}(id=${txn.id})}">Details</a>
+        </td>
+      </tr>
+    </th:block>
+    </tbody>
+  </table>
+</div>
+
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Teams</h6></div>
+  <br/><br/>
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Format</th>
+        <th>Season</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="team : ${listTeams}">
+        <tr>
+          <td>[[${team.id}]]</td>
+          <td>[[${team.name}]]</td>
+          <td>[[${team.format}]]</td>
+          <td>[[${team.season}]]</td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+
+<script type="text/javascript">
+  function cancelForm() {
+    window.location = "[[@{/index}]]"
+  }
+
+</script>
+</body>
+</html></title>
+</head>
+<body>
+
+</body>
+</html>

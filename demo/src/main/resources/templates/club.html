@@ -1,0 +1,74 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WCC Portal</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+  <div><h2 class="core">Manage Club</h2></div>
+  <br/>
+  <br/>
+  <div class="m-2" >
+    <a class="h3 mr-2" th:href="@{/index}">Home</a>
+  </div>
+  <br/>
+  <br/>
+  <div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+  </div>
+  <div th:if="${errorMessage}" class="alert alert-danger text-center">
+    [[${errorMessage}]]
+  </div>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Paypal Id</th>
+        <th>Venmo ID</th>
+        <th>Starting Balance</th>
+        <th>Current Balance</th>
+        <th>Available Balance</th>
+        <th>Suspense Balance</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="account : ${clubAccount}">
+        <tr>
+          <td>[[${account.id}]]</td>
+          <td>[[${account.name}]]</td>
+          <td>[[${account.paypalId}]]</td>
+          <td>[[${account.venmoId}]]</td>
+          <td>[[${account.startingBalance}]]</td>
+          <td>[[${account.currentBalance}]]</td>
+          <td>[[${account.availableBalance}]]</td>
+          <td>[[${account.suspenseBalance}]]</td>
+          <td>
+            <a class="h4 mr-2" th:href="@{/club/edit/{id}(id=${account.id})}">Edit</a>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

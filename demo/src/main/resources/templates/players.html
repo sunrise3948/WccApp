@@ -1,0 +1,112 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WCC Portal</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+  <div><h2 class="core">Manage Players</h2></div>
+  <br/>
+  <br/>
+  <div class="m-2" >
+    <a class="h3 mr-2" th:href="@{/index}">Home</a>
+    <a class="h3 mr-2"> | </a>
+    <a class="h3 mr-2" th:href="@{/players/add}">Add New Player</a>
+  </div>
+  <br/>
+  <br/>
+  <div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+  </div>
+  <div th:if="${errorMessage}" class="alert alert-danger text-center">
+    [[${errorMessage}]]
+  </div>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+        <tr>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">ID</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=firstName&sortDir=' + ${reverseSortDir}}">First Name</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir}}">Last Name</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortDir}}">Email</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=phone&sortDir=' + ${reverseSortDir}}">Phone</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=url&sortDir=' + ${reverseSortDir}}">NWCL Profile</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=status&sortDir=' + ${reverseSortDir}}">Status</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=pantSize&sortDir=' + ${reverseSortDir}}">Pant Size</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=shirtSize&sortDir=' + ${reverseSortDir}}">Shirt Size</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=joiningDate&sortDir=' + ${reverseSortDir}}">Date of Joining</a></th>
+          <th><a th:href="@{'/players/page/' + ${currentPage} + '?sortField=dob&sortDir=' + ${reverseSortDir}}">Date of Birth</a></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <th:block th:each="player : ${listPlayers}">
+          <tr>
+            <td>[[${player.id}]]</td>
+            <td>[[${player.firstName}]]</td>
+            <td>[[${player.lastName}]]</td>
+            <td>[[${player.email}]]</td>
+            <td>[[${player.phone}]]</td>
+            <td><a th:href="${player.url}">Link</a></td>
+            <td>[[${player.status}]]</td>
+            <td>[[${player.pantSize}]]</td>
+            <td>[[${player.shirtSize}]]</td>
+            <td>[[${#calendars.format(player.joiningDate,'dd MMMM yyyy')}]]</td>
+            <td>[[${#calendars.format(player.dob,'dd MMMM yyyy')}]]</td>
+            <td>
+              <a class="h4 mr-2" th:href="@{/players/edit/{id}(id=${player.id})}">Edit</a>
+              <a class="h4 mr-2"> | </a>
+              <a class="h4 mr-2" th:href="@{/players/delete/{id}(id=${player.id})}">Delete</a>
+              <a class="h4 mr-2"> | </a>
+              <a class="h4 mr-2" th:href="@{/players/account/{id}(id=${player.id})}">Account</a>
+              <a class="h4 mr-2"> | </a>
+              <a class="h4 mr-2" th:href="@{/players/team/{id}(id=${player.id})}">Team Assignment</a>
+            </td>
+          </tr>
+        </th:block>
+      </tbody>
+    </table>
+
+    <div class="core_light" th:if = "${totalPages > 1}">
+      <div class = "row col-sm-10">
+        <div class = "col-sm-2">
+          Total Rows: [[${totalItems}]]
+        </div>
+        <div class = "col-sm-1">
+     <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+      <a th:if="${currentPage != i}" th:href="@{'/players/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+     </span>
+        </div>
+        <div class = "col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/players/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+          <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+
+        <div class="col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/players/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+          <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</body>
+</html>

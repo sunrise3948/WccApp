@@ -1,0 +1,96 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WCC Portal</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+  <div><h2 class="core">Manage Team Assignment</h2></div>
+  <br/>
+  <br/>
+  <div class="m-2" >
+    <a class="h3 mr-2" th:href="@{/players}">Back</a>
+  </div>
+  <br/>
+  <br/>
+  <div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+  </div>
+  <div th:if="${errorMessage}" class="alert alert-danger text-center">
+    [[${errorMessage}]]
+  </div>
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Current Assignments</h6></div>
+  <br/><br/>
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>Team Name</th>
+        <th>Season</th>
+        <th>Format</th>
+        <th>Enabled</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="team : ${listTeams}">
+        <tr>
+          <td>[[${team.name}]]</td>
+          <td>[[${team.season}]]</td>
+          <td>[[${team.format}]]</td>
+          <td>[[${team.enabled}]]</td>
+          <td><a class="h4 mr-2" th:href="@{/players/removeTeam/{id}/{playerId}(id=${team.id}, playerId=${playerId})}">Remove Assignment</a></td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+  <br/><br/><br/><br/>
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Possible Assignments</h6></div>
+  <br/><br/>
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>Team Name</th>
+        <th>Season</th>
+        <th>Format</th>
+        <th>Enabled</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="team : ${listAllTeams}">
+        <tr>
+          <td>[[${team.name}]]</td>
+          <td>[[${team.season}]]</td>
+          <td>[[${team.format}]]</td>
+          <td>[[${team.enabled}]]</td>
+          <td><a class="h4 mr-2" th:href="@{/players/addTeam/{id}/{playerId}(id=${team.id}, playerId=${playerId})}">Add Assignment</a></td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+</body>
+</html>

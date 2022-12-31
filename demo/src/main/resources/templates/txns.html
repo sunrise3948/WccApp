@@ -1,0 +1,240 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WCC Portal</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+  <div><h2 class="core">Manage Transactions</h2></div>
+  <br/>
+  <br/>
+  <div class="m-2" >
+    <a class="h3 mr-2" th:href="@{/index}">Home</a>
+    <a class="h3 mr-2"> | </a>
+    <a class="h3 mr-2" th:href="@{/txns/addCredit}">Add Credit</a>
+    <a class="h3 mr-2"> | </a>
+    <a class="h3 mr-2" th:href="@{/txns/addDebit}">Add Debit</a>
+    <a class="h3 mr-2"> | </a>
+    <a class="h3 mr-2" th:href="@{/txns/addExpense}">Add Group Expense</a>
+    <a class="h3 mr-2"> | </a>
+    <a class="h3 mr-2" th:href="@{/txns/addSingleExpense}">Add Individual Expense</a>
+  </div>
+  <br/>
+  <br/>
+  <div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+  </div>
+  <div th:if="${errorMessage}" class="alert alert-danger text-center">
+    [[${errorMessage}]]
+  </div>
+
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Pending Transactions</h6></div>
+  <br/><br/>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Source</th>
+        <th>Status</th>
+        <th>Mode</th>
+        <th>Description</th>
+        <th>Amount</th>
+        <th>Txn Date</th>
+        <th>Submitted Date</th>
+        <th>Updated Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="txn : ${listPendingTxns}">
+        <tr>
+          <td>[[${txn.id}]]</td>
+          <td>[[${txn.type}]]</td>
+          <td>[[${txn.source}]]</td>
+          <td>[[${txn.status}]]</td>
+          <td>[[${txn.mode}]]</td>
+          <td>[[${txn.description}]]</td>
+          <td>[[${txn.amount}]]</td>
+          <td>[[${#calendars.format(txn.txnDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(txn.submittedDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(txn.updatedDate,'dd MMMM yyyy')}]]</td>
+          <td>
+            <a class="h4 mr-2" th:href="@{/txns/details/{id}(id=${txn.id})}">Details</a>
+            <a class="h4 mr-2"> | </a>
+            <a class="h4 mr-2" th:href="@{/txns/edit/{id}(id=${txn.id})}">Edit</a>
+            <a class="h4 mr-2"> | </a>
+            <a class="h4 mr-2" th:href="@{/txns/acknowledge/{id}(id=${txn.id})}">Acknowledge</a>
+            <a class="h4 mr-2"> | </a>
+            <a class="h4 mr-2" th:href="@{/txns/cancel/{id}(id=${txn.id})}">Cancel</a>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+    <a class="h4 mr-2" th:href="@{/pendingTransactions/page/1?sortField=id&sortDir=desc}">See All</a>
+  </div>
+
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Acknowledged Transactions</h6></div>
+  <br/><br/>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Source</th>
+        <th>Status</th>
+        <th>Mode</th>
+        <th>Description</th>
+        <th>Amount</th>
+        <th>Txn Date</th>
+        <th>Submitted Date</th>
+        <th>Updated Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="txn : ${listApprovedTxns}">
+        <tr>
+          <td>[[${txn.id}]]</td>
+          <td>[[${txn.type}]]</td>
+          <td>[[${txn.source}]]</td>
+          <td>[[${txn.status}]]</td>
+          <td>[[${txn.mode}]]</td>
+          <td>[[${txn.description}]]</td>
+          <td>[[${txn.amount}]]</td>
+          <td>[[${#calendars.format(txn.txnDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(txn.submittedDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(txn.updatedDate,'dd MMMM yyyy')}]]</td>
+          <td>
+            <a class="h4 mr-2" th:href="@{/txns/details/{id}(id=${txn.id})}">Details</a>
+            <a class="h4 mr-2"> | </a>
+            <a class="h4 mr-2" th:href="@{/txns/settle/{id}(id=${txn.id})}">Settle</a>
+            <a class="h4 mr-2"> | </a>
+            <a class="h4 mr-2" th:href="@{/txns/cancelAcknowledgedTxn/{id}(id=${txn.id})}">Cancel</a>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+
+    <a class="h4 mr-2" th:href="@{/acknowledgedTransactions/page/1?sortField=id&sortDir=desc}">See All</a>
+
+  </div>
+
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Settled Transactions</h6></div>
+  <br/><br/>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Source</th>
+        <th>Status</th>
+        <th>Mode</th>
+        <th>Description</th>
+        <th>Amount</th>
+        <th>Txn Date</th>
+        <th>Submitted Date</th>
+        <th>Updated Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="txn : ${listSettledTxns}">
+        <tr>
+          <td>[[${txn.id}]]</td>
+          <td>[[${txn.type}]]</td>
+          <td>[[${txn.source}]]</td>
+          <td>[[${txn.status}]]</td>
+          <td>[[${txn.mode}]]</td>
+          <td>[[${txn.description}]]</td>
+          <td>[[${txn.amount}]]</td>
+          <td>[[${#calendars.format(txn.txnDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(txn.submittedDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(txn.updatedDate,'dd MMMM yyyy')}]]</td>
+          <td>
+            <a class="h4 mr-2" th:href="@{/txns/details/{id}(id=${txn.id})}">Details</a>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+
+    <a class="h4 mr-2" th:href="@{/settledTransactions/page/1?sortField=id&sortDir=desc}">See All</a>
+
+  </div>
+
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Cancelled Transactions</h6></div>
+  <br/><br/>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Source</th>
+        <th>Status</th>
+        <th>Mode</th>
+        <th>Description</th>
+        <th>Amount</th>
+        <th>Txn Date</th>
+        <th>Submitted Date</th>
+        <th>Updated Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="txn : ${allCanceledTxns}">
+        <tr>
+          <td>[[${txn.id}]]</td>
+          <td>[[${txn.type}]]</td>
+          <td>[[${txn.source}]]</td>
+          <td>[[${txn.status}]]</td>
+          <td>[[${txn.mode}]]</td>
+          <td>[[${txn.description}]]</td>
+          <td>[[${txn.amount}]]</td>
+          <td>[[${#calendars.format(txn.txnDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(txn.submittedDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(txn.updatedDate,'dd MMMM yyyy')}]]</td>
+          <td>
+            <a class="h4 mr-2" th:href="@{/txns/details/{id}(id=${txn.id})}">Details</a>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+
+    <a class="h4 mr-2" th:href="@{/cancelledTransactions/page/1?sortField=id&sortDir=desc}">See All</a>
+
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WCC Portal</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+    <div class="text-center"><h2 class="core">Player Account Details</h2></div>
+    <Br/><Br/>
+    <form th:action="@{/accounts/save}" method="post" th:object="${account}" style="max-width: 500px; margin: 0 auto;">
+        <div class="border border-secondary rounded core_light p-3">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Starting Balance</label>
+                <div class="col-sm-8">
+                    <input type="hidden" th:field="*{id}" class="form-control" >
+                    <input type="number" th:field="*{startingBalance}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Current Balance</label>
+                <div class="col-sm-8">
+                    <input type="number" th:field="*{currentBalance}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Available Balance</label>
+                <div class="col-sm-8">
+                    <input type="number" th:field="*{availableBalance}" class="form-control">
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="button" class="btn btn-secondary m-2" onclick="cancelForm()">Cancel</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+<br/><br/>
+<div class="text-center"><h6 class="core">Transactions</h6></div>
+<br/><br/>
+<div>
+    <table class="table table-bordered table-hover core_light">
+        <thead class="thead-light">
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Your share</th>
+            <th>Impact on your Account</th>
+            <th>Txn Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="txn : ${listTxns}">
+            <tr>
+                <td>[[${txn.id}]]</td>
+                <td>[[${txn.type}]]</td>
+                <td>[[${txn.source}]]</td>
+                <td>[[${txn.status}]]</td>
+                <td>[[${txn.description}]]</td>
+                <td>[[${txn.amount}]]</td>
+                <td>[[${txn.amount/(#lists.size(txn.players))}]]</td>
+                <td>
+                    <span th:if="${(txn.type.name == 'CREDIT') or (txn.type.name == 'EXPENSE' and txn.mode.name == 'INDIVIDUAL')}">CREDIT</span>
+                    <span th:unless="${(txn.type.name == 'CREDIT') or (txn.type.name == 'EXPENSE' and txn.mode.name == 'INDIVIDUAL')}">DEBIT</span>
+                </td>
+                <td>[[${#calendars.format(txn.txnDate,'dd MMMM yyyy')}]]</td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+  function cancelForm() {
+    window.location = "[[@{/players}]]"
+  }
+
+</script>
+</body>
+</html></title>
+</head>
+<body>
+
+</body>
+</html>

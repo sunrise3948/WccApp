@@ -1,0 +1,108 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WCC Portal</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+  <div><h2 class="core">Manage Events</h2></div>
+  <br/>
+  <br/>
+  <div class="m-2" >
+    <a class="h3 mr-2" th:href="@{/index}">Home</a>
+    <a class="h3 mr-2"> | </a>
+    <a class="h3 mr-2" th:href="@{/events}">Back</a>
+  </div>
+  <br/>
+  <br/>
+  <div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+  </div>
+  <div th:if="${errorMessage}" class="alert alert-danger text-center">
+    [[${errorMessage}]]
+  </div>
+
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Completed Events</h6></div>
+  <br/><br/>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th><a th:href="@{'/completedEvents/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">ID</a></th>
+        <th><a th:href="@{'/completedEvents/page/' + ${currentPage} + '?sortField=description&sortDir=' + ${reverseSortDir}}">Description</a></th>
+        <th><a th:href="@{'/completedEvents/page/' + ${currentPage} + '?sortField=type&sortDir=' + ${reverseSortDir}}">Type</a></th>
+        <th><a th:href="@{'/completedEvents/page/' + ${currentPage} + '?sortField=status&sortDir=' + ${reverseSortDir}}">Status</a></th>
+        <th><a th:href="@{'/completedEvents/page/' + ${currentPage} + '?sortField=mode&sortDir=' + ${reverseSortDir}}">Mode</a></th>
+        <th><a th:href="@{'/completedEvents/page/' + ${currentPage} + '?sortField=eventDate&sortDir=' + ${reverseSortDir}}">Event Date</a></th>
+        <th><a th:href="@{'/completedEvents/page/' + ${currentPage} + '?sortField=submittedDate&sortDir=' + ${reverseSortDir}}">Submitted Date</a></th>
+        <th><a th:href="@{'/completedEvents/page/' + ${currentPage} + '?sortField=updatedDate&sortDir=' + ${reverseSortDir}}">Last Updated Date</a></th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="event : ${listInProgressEvents}">
+        <tr>
+          <td>[[${event.id}]]</td>
+          <td>[[${event.description}]]</td>
+          <td>[[${event.type}]]</td>
+          <td>[[${event.status}]]</td>
+          <td>[[${event.mode}]]</td>
+          <td>[[${#calendars.format(event.eventDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(event.submittedDate,'dd MMMM yyyy')}]]</td>
+          <td>[[${#calendars.format(event.updatedDate,'dd MMMM yyyy')}]]</td>
+          <td>
+            <a class="h4 mr-2" th:href="@{/events/details/{id}(id=${event.id})}">Details</a>
+            <a class="h4 mr-2"> | </a>
+            <a class="h4 mr-2" th:href="@{/events/edit/{id}(id=${event.id})}">Edit</a>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+
+    <div class="core_light" th:if = "${totalPages > 1}">
+      <div class = "row col-sm-10">
+        <div class = "col-sm-2">
+          Total Rows: [[${totalItems}]]
+        </div>
+        <div class = "col-sm-1">
+     <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+      <a th:if="${currentPage != i}" th:href="@{'/completedEvents/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+     </span>
+        </div>
+        <div class = "col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/completedEvents/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+          <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+
+        <div class="col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/completedEvents/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+          <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+</body>
+</html>

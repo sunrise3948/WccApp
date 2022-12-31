@@ -1,0 +1,96 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WCC Portal</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+  <div><h2 class="core">Manage Teams</h2></div>
+  <br/>
+  <br/>
+  <div class="m-2" >
+    <a class="h3 mr-2" th:href="@{/index}">Home</a>
+    <a class="h3 mr-2"> | </a>
+    <a class="h3 mr-2" th:href="@{/teams/add}">Add New team</a>
+  </div>
+  <br/>
+  <br/>
+  <div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+  </div>
+  <div th:if="${errorMessage}" class="alert alert-danger text-center">
+    [[${errorMessage}]]
+  </div>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <th><a th:href="@{'/teams/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">ID</a></th>
+        <th><a th:href="@{'/teams/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir}}">Name</a></th>
+        <th><a th:href="@{'/teams/page/' + ${currentPage} + '?sortField=season&sortDir=' + ${reverseSortDir}}">Season</a></th>
+        <th><a th:href="@{'/teams/page/' + ${currentPage} + '?sortField=format&sortDir=' + ${reverseSortDir}}">Format</a></th>
+        <th><a th:href="@{'/teams/page/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${reverseSortDir}}">Enabled</a></th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="team : ${listTeams}">
+        <tr>
+          <td>[[${team.id}]]</td>
+          <td>[[${team.name}]]</td>
+          <td>[[${team.season}]]</td>
+          <td>[[${team.format}]]</td>
+          <td>[[${team.enabled}]]</td>
+          <td>
+            <a class="h4 mr-2" th:href="@{/teams/edit/{id}(id=${team.id})}">Edit</a>
+            <a class="h4 mr-2"> | </a>
+            <a class="h4 mr-2" th:href="@{/teams/roster/{id}(id=${team.id})}">Team Roster</a>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+
+    <div class="core_light" th:if = "${totalPages > 1}">
+      <div class = "row col-sm-10">
+        <div class = "col-sm-2">
+          Total Rows: [[${totalItems}]]
+        </div>
+        <div class = "col-sm-1">
+     <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+      <a th:if="${currentPage != i}" th:href="@{'/teams/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+     </span>
+        </div>
+        <div class = "col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/teams/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+          <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+
+        <div class="col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/teams/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+          <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

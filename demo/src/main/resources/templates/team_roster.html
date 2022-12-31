@@ -1,0 +1,83 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WCC Portal</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<style>
+.core {
+  background-color: #880808;
+  color: white;
+  padding: 10px;
+}
+.core_light {
+  background-color: white;
+  color: black;
+  padding: 10px;
+}
+</style>
+<body style="background-color:black;">
+<Br/><Br/><Br/><Br/>
+<div class="container-fluid text-center">
+  <div><h2 class="core">Check Team Roster</h2></div>
+  <br/>
+  <br/>
+  <div class="m-2" >
+    <a class="h3 mr-2" th:href="@{/teams}">Back</a>
+  </div>
+
+  <br/><br/>
+  <div class="text-center"><h6 class="core">Current Players</h6></div>
+  <br/><br/>
+
+  <div>
+    <table class="table table-bordered table-hover core_light">
+      <thead class="thead-light">
+      <tr>
+        <input type="hidden" th:field="*{id}" class="form-control">
+        <th><a th:href="@{'/teams/roster/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortDir} + '&teamId=' + ${id}}">Email</a></th>
+        <th><a th:href="@{'/teams/roster/page/' + ${currentPage} + '?sortField=firstName&sortDir=' + ${reverseSortDir} + '&teamId=' + ${id}}">First Name</a></th>
+        <th><a th:href="@{'/teams/roster/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir} + '&teamId=' + ${id}}">Last Name</a></th>
+        <th><a th:href="@{'/teams/roster/page/' + ${currentPage} + '?sortField=phone&sortDir=' + ${reverseSortDir} + '&teamId=' + ${id}}">Phone</a></th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="player : ${teamPlayers}">
+        <tr>
+          <td>[[${player.email}]]</td>
+          <td>[[${player.firstName}]]</td>
+          <td>[[${player.lastName}]]</td>
+          <td>[[${player.phone}]]</td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+
+    <div class="core_light" th:if = "${totalPages > 1}">
+      <div class = "row col-sm-10">
+        <div class = "col-sm-2">
+          Total Rows: [[${totalItems}]]
+        </div>
+        <div class = "col-sm-1">
+     <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+      <a th:if="${currentPage != i}" th:href="@{'/teams/roster/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+     </span>
+        </div>
+        <div class = "col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/teams/roster/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+          <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+
+        <div class="col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/teams/roster/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+          <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

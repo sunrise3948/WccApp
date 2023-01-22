@@ -72,7 +72,8 @@
             <td>
               <a class="h4 mr-2" th:href="@{/players/edit/{id}(id=${player.id})}">Edit</a>
               <a class="h4 mr-2"> | </a>
-              <a class="h4 mr-2" th:href="@{/players/delete/{id}(id=${player.id})}">Delete</a>
+              <a th:if="${player.status.name() == 'ACTIVE'}" class="h4 mr-2" th:href="@{/players/disable/{id}(id=${player.id})}">Disable</a>
+              <a th:if="${player.status.name() == 'INACTIVE'}" class="h4 mr-2" th:href="@{/players/enable/{id}(id=${player.id})}">Enable</a>
               <a class="h4 mr-2"> | </a>
               <a class="h4 mr-2" th:href="@{/players/account/{id}(id=${player.id})}">Account</a>
               <a class="h4 mr-2"> | </a>

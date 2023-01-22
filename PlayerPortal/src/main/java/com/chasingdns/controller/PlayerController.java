@@ -7,6 +7,8 @@ import com.chasingdns.service.PlayerService;
 import com.chasingdns.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +32,8 @@ public class PlayerController {
     @Autowired private PlayerService playerService;
     @Autowired private AccountService accountService;
     @Autowired private TeamService teamService;
+
+    @Autowired private JavaMailSender mailSender;
 
     @GetMapping("/players")
     public String showAllPlayers(Model model){
@@ -121,11 +128,27 @@ public class PlayerController {
         }
     }
 
-    @GetMapping("/players/delete/{id}")
-    public String deletePlayer(@PathVariable("id")Integer id, Model model, RedirectAttributes ra){
+    @GetMapping("/players/disable/{id}")
+    public String disablePlayer(@PathVariable("id")Integer id, Model model, RedirectAttributes ra){
         try {
-            playerService.delete(id);
-            ra.addFlashAttribute("message","Player with ID: "+ id + " deleted successfully");
+            Player player = playerService.get(id);
+            player.setStatus(Player.PLAYER_STATUS.INACTIVE);
+            playerService.save(player);
+            ra.addFlashAttribute("message","Player with ID: "+ id + " disabled successfully");
+        } catch (NotFoundException e) {
+            ra.addFlashAttribute("errorMessage","Player not found");
+            return "redirect:/players";
+        }
+        return "redirect:/players";
+    }
+
+    @GetMapping("/players/enable/{id}")
+    public String enablePlayer(@PathVariable("id")Integer id, Model model, RedirectAttributes ra){
+        try {
+            Player player = playerService.get(id);
+            player.setStatus(Player.PLAYER_STATUS.ACTIVE);
+            playerService.save(player);
+            ra.addFlashAttribute("message","Player with ID: "+ id + " enabled successfully");
         } catch (NotFoundException e) {
             ra.addFlashAttribute("errorMessage","Player not found");
             return "redirect:/players";
@@ -140,10 +163,31 @@ public class PlayerController {
             Player player = playerService.get(id);
             model.addAttribute("listTxns", player.getTransactions());
             model.addAttribute("account", account);
+            model.addAttribute("player", player);
             return "player_account";
         } catch (NotFoundException e) {
             ra.addFlashAttribute("errorMessage","Account not found");
             return "redirect:/players";
+        }
+    }
+
+    @GetMapping("/players/reminder/{id}")
+    public String sendPlayerReminderForPayment(@PathVariable("id")Integer id, Model model, RedirectAttributes ra){
+        try {
+            Account account = accountService.getAccountByPlayerId(id);
+            Player player = playerService.get(id);
+            sendEmail(player.getEmail());
+            model.addAttribute("listTxns", player.getTransactions());
+            model.addAttribute("account", account);
+            model.addAttribute("player", player);
+            return "player_account";
+        } catch (NotFoundException e) {
+            ra.addFlashAttribute("errorMessage","Account not found");
+            return "redirect:/player_account";
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -211,6 +255,21 @@ public class PlayerController {
             ra.addFlashAttribute("errorMessage","Player not found");
             return "redirect:/players";
         }
+    }
+
+    private void sendEmail(String recipientEmail) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setFrom("support@wcc.com", "WCC Support");
+        helper.setTo(recipientEmail);
+        String subject = "Pls add funds to your account";
+        String content = "<p>Hello,</p>"
+                + "<p>Your account balance is low.</p>"
+                + "<p>Pls login to the WCC portal and add funds</p>";
+
+        helper.setSubject(subject);
+        helper.setText(content, true);
+        mailSender.send(message);
     }
 
 

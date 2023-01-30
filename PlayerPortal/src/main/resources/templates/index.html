@@ -53,11 +53,13 @@
     </div>
 
     <div class="m-2" sec:authorize="hasAnyAuthority('USER')">
-        <a class="h3 mr-2" th:href="@{/player}">Account Details</a>
+        <a class="h3 mr-2" th:href="@{/player}">Account</a>
         <a class="h3 mr-2"> | </a>
         <a class="h3 mr-2" th:href="@{/txn/player}">Create Expense</a>
         <a class="h3 mr-2"> | </a>
-        <a class="h3 mr-2" th:href="@{/player/performance}">Your Performance</a>
+        <a class="h3 mr-2" th:href="@{/player/performance}">Performance</a>
+        <a class="h3 mr-2"> | </a>
+        <a class="h3 mr-2" th:href="@{/player/profile}">Profile</a>
     </div>
 <!--
         Welcome <b><span sec:authentication="name">Username</span></b>

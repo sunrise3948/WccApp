@@ -25,6 +25,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class PlayerController {
@@ -63,10 +65,17 @@ public class PlayerController {
             model.addAttribute("errorMessage","Player not found");
         }
         Account account = accountService.getAccountByPlayerId(player.getId());
-        model.addAttribute("listTxns", player.getTransactions());
-        model.addAttribute("listTeams", player.getTeams());
+        model.addAttribute("listTxns", player.getTransactions().stream().sorted().limit(5).collect(Collectors.toList()));
+        model.addAttribute("listTeams", player.getTeams().stream().limit(5).collect(Collectors.toList()));
         model.addAttribute("account", account);
         return "showPlayerDetails";
+    }
+
+    @GetMapping("/player/transactions/")
+    public String findPlayerTxns(Model model, @AuthenticationPrincipal AppUserDetails userDetails) {
+        Player player = playerService.findByUsername(userDetails.getUsername());
+        model.addAttribute("listTxns", player.getTransactions().stream().sorted().limit(100).collect(Collectors.toList()));
+        return "showPlayerTransactions";
     }
 
     @GetMapping("/player/performance")
@@ -79,6 +88,31 @@ public class PlayerController {
             httpServletResponse.setHeader("Location", "index");
             httpServletResponse.setStatus(302);
         }
+    }
+
+    @GetMapping("/player/profile")
+    public String showPlayerProfile(Model model, @AuthenticationPrincipal AppUserDetails userDetails) throws NotFoundException {
+        Player player = playerService.findByUsername(userDetails.getUsername());
+        model.addAttribute("player", player);
+        return "showPlayerProfile";
+    }
+
+    @PostMapping("/player/save")
+    public String saveExistingPlayer(Player player, RedirectAttributes ra, Model model) throws NotFoundException {
+        String msg = "";
+        if(player.getId()!=0){
+            msg = "Player updated successfully";
+        } else {
+            msg = "Player added successfully";
+        }
+        playerService.save(player);
+        ra.addFlashAttribute("message",msg);
+        Account account = accountService.getAccountByPlayerId(player.getId());
+        model.addAttribute("listTxns", player.getTransactions().stream().sorted().limit(5).collect(Collectors.toList()));
+        model.addAttribute("listTeams", player.getTeams().stream().limit(5).collect(Collectors.toList()));
+        model.addAttribute("account", account);
+        model.addAttribute("player", player);
+        return "index";
     }
 
     @GetMapping("/player/addFunds")

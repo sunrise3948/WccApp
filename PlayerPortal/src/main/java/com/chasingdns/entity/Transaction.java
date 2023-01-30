@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="transactions")
-public class Transaction {
+public class Transaction implements Comparable<Transaction>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -163,6 +163,10 @@ public class Transaction {
         this.event = event;
     }
 
+    @Override
+    public int compareTo(Transaction o) {
+        return Integer.valueOf(o.getId()).compareTo(Integer.valueOf(this.id));
+    }
 
     public enum TXN_TYPE {
         EXPENSE, CREDIT, DEBIT;
